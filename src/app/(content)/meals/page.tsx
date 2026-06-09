@@ -1,5 +1,7 @@
+import CardsGrid from "@/components/cards-grid";
+
 function MealsPage() {
-  return <div>Meals Page</div>;
+  return <CardsGrid />;
 }
 
 export default MealsPage;
