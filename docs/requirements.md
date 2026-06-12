@@ -38,7 +38,7 @@ Out of scope for v1:
 
 ## Core User Journeys
 1. A user lands on the home page and navigates to meals or cocktails.
-2. A user searches meals or cocktails by name and narrows results by category.
+2. A user searches meals or cocktails by name or browses by category, depending on the current discovery mode.
 3. A user opens a detail page to view ingredients, instructions, and supporting media.
 4. A user adds or removes favorites from listing cards or detail views.
 5. A user revisits the app and sees previously saved favorites still available on the same device.
@@ -66,8 +66,8 @@ Required routes:
 
 Route intent:
 - `/` introduces the product and links users into meal and cocktail discovery.
-- `/meals` supports search by name, category filtering, paging, and favoriting.
-- `/cocktails` supports search by name, category filtering, paging, and favoriting.
+- `/meals` supports name-based search mode, category browse mode, paging, and favoriting.
+- `/cocktails` supports name-based search mode, category browse mode, paging, and favoriting.
 - `/favorites` aggregates saved meals and cocktails in one place.
 - `/meals/[id]` shows the full meal detail.
 - `/cocktails/[id]` shows the full cocktail detail.
@@ -84,19 +84,21 @@ Route intent:
 ### Meals Page
 - Provide a search field that searches meals by name only.
 - Provide a category filter and no other user-facing filters.
+- Search and category browsing do not combine in a single API request. Starting one mode may replace the other in URL state and results.
 - Show results as cards with image, title, category, and favorite action.
 - Support pagination over fetched result sets.
 - Show loading, empty, and error states.
-- Preserve browse state in the URL where practical using query parameters such as `search`, `category`, and `page`.
+- Preserve browse state in the URL where practical using query parameters such as `queryName`, `category`, and `page`.
 - Allow users to add or remove favorites directly from the listing.
 
 ### Cocktails Page
 - Provide a search field that searches cocktails by name only.
 - Provide a category filter and no other user-facing filters.
+- Search and category browsing do not combine in a single API request. Starting one mode may replace the other in URL state and results.
 - Show results as cards with image, title, category, and favorite action.
 - Support pagination over fetched result sets.
 - Show loading, empty, and error states.
-- Preserve browse state in the URL where practical using query parameters such as `search`, `category`, and `page`.
+- Preserve browse state in the URL where practical using query parameters such as `queryName`, `category`, and `page`.
 - Allow users to add or remove favorites directly from the listing.
 
 ### Favorites Page
@@ -122,10 +124,12 @@ Route intent:
 - Search is strictly name-based.
 - Search must never be described or implemented as id-based.
 - Category is the only exposed user-facing filter in v1.
+- Name search and category browsing are separate modes when backed by the public MealDB and CocktailDB APIs.
+- The UI may reset one mode when the other is activated, rather than composing both in a single request.
 - Any optional sort control must rely only on supported non-premium data behavior.
 - Pagination may be client-managed over fetched results because the public APIs do not provide native pagination suited to the target UI.
 - Query parameters should represent browse state where useful:
-  - `search`
+  - `queryName`
   - `category`
   - `page`
   - `sort` only if the implementation keeps it within supported behavior
@@ -140,6 +144,7 @@ Supported v1 usage:
 
 Constraints:
 - Name search is the primary browse mechanism.
+- Public v1 endpoints do not support combining name search and category filtering in one request.
 - Detail pages may use ids internally for data fetching.
 - Ingredient, area, and other extra filter capabilities are out of scope even if the API exposes them.
 - Premium-only endpoints must not be required for the MVP.
@@ -152,6 +157,7 @@ Supported v1 usage:
 
 Constraints:
 - Name search is the primary browse mechanism.
+- Public v1 endpoints do not support combining name search and category filtering in one request.
 - Detail pages may use ids internally for data fetching.
 - Glass, ingredient, alcoholic, and other extra filter capabilities are out of scope even if the API exposes them.
 - Premium-only endpoints must not be required for the MVP.
@@ -229,7 +235,7 @@ Design requirements:
 ## Responsive and Mobile Behavior
 - Mobile layouts must support the home, listing, and detail experiences shown in the design direction.
 - Listing filters should collapse into a mobile sheet or drawer.
-- Mobile search and category filter behavior must remain aligned with the same functional rules as desktop.
+- Mobile search and category filter behavior must remain aligned with the same mutually exclusive mode rules as desktop.
 - Detail pages must remain readable and actionable on small screens, including favorites and instruction access.
 
 ## Non-Functional Requirements
@@ -250,15 +256,17 @@ Design requirements:
 ### Component / Integration Tests
 - Search by name on meals
 - Search by name on cocktails
-- Category filter interactions
+- Category browse interactions
 - Pagination behavior
 - Favorites toggling from cards
 - Favorites toggling from detail pages
 - Loading, empty, and error states
 
 ### End-to-End Tests
-- Browse meals by name and category
-- Browse cocktails by name and category
+- Browse meals by name
+- Browse meals by category
+- Browse cocktails by name
+- Browse cocktails by category
 - Open detail pages from listing cards
 - Add and remove favorites
 - Verify favorites persist across reloads

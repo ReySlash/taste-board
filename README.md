@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) TasteBoard project.
+
+## Product Notes
+
+- MVP product scope lives in [`docs/requirements.md`](docs/requirements.md).
+- Public MealDB and CocktailDB browse flows currently support either name search or category browsing per request, not both combined in one API call.
+- The current URL filter state uses `queryName` for name search and `category` for category browsing.
 
 ## Getting Started
 
