@@ -3,7 +3,7 @@ import { ModeToggle } from "./mode-toggle";
 
 function TopNav() {
   return (
-    <header className="flex flex-row justify-between items-center h-10 py-4 px-4 sticky top-0 border-b border-slate-800 backdrop-blur-md">
+    <header className="flex flex-row justify-between items-center h-10 py-4 px-4 sticky top-0 bg-white dark:bg-black border-b border-gray-900 z-50">
       <h1 className="text-2xl font-bold">Taste Board</h1>
       <div>
         <nav>

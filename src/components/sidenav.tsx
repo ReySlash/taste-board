@@ -9,7 +9,7 @@ type Props = {
 
 function SideNav({ categories, selectedCategory }: Props) {
   return (
-    <aside className="w-64 h-full shrink-0 overflow-hidden border-r border-slate-800 p-4 flex flex-col gap-4">
+    <aside className="w-64 h-full border-r border-slate-800 p-4 flex flex-col gap-4">
       <h4 className="text-2xl text-center font-bold">Filters</h4>
       <Form
         action="/meals"
