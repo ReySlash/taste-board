@@ -1,5 +1,5 @@
 import CardsGrid from "@/components/cards-grid";
-import SideNav from "@/components/side-nav";
+import SideNav from "@/components/sidenav";
 
 function CocktailsPage() {
   return (

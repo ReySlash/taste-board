@@ -1,51 +1,27 @@
+import { MealSummary } from "@/types/meals";
 import { CardImage } from "./recipe-card";
-import MargaritaImG from "@/../public/4c91129ed03f9abaf17f0b54cd83206f2f3b709b.avif";
 
-function CardsGrid() {
-  return (
+type Props = {
+  data: MealSummary[];
+};
+
+function CardsGrid(props: Props) {
+  const { data } = props;
+  return data.length === 0 ? (
+    <div className="flex flex-col h-full justify-center items-center">
+      <p className="text-3xl">No recipes found.</p>
+    </div>
+  ) : (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-2">
-      <div className="col-span-1">
-        <CardImage
-          title="Margarita"
-          description="A classic margarita with tequila, triple sec, and lime juice."
-          image={MargaritaImG.src}
-        />
-      </div>
-      <div className="col-span-1">
-        <CardImage
-          title="Margarita"
-          description="A classic margarita with tequila, triple sec, and lime juice."
-          image={MargaritaImG.src}
-        />
-      </div>
-      <div className="col-span-1">
-        <CardImage
-          title="Margarita"
-          description="A classic margarita with tequila, triple sec, and lime juice."
-          image={MargaritaImG.src}
-        />
-      </div>
-      <div className="col-span-1">
-        <CardImage
-          title="Margarita"
-          description="A classic margarita with tequila, triple sec, and lime juice."
-          image={MargaritaImG.src}
-        />
-      </div>
-      <div className="col-span-1">
-        <CardImage
-          title="Margarita"
-          description="A classic margarita with tequila, triple sec, and lime juice."
-          image={MargaritaImG.src}
-        />
-      </div>
-      <div className="col-span-1">
-        <CardImage
-          title="Margarita"
-          description="A classic margarita with tequila, triple sec, and lime juice."
-          image={MargaritaImG.src}
-        />
-      </div>
+      {data.map((item) => (
+        <div key={item.idMeal} className="col-span-1">
+          <CardImage
+            title={item.strMeal}
+            description={item.strArea}
+            image={item.strMealThumb}
+          />
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,12 +1,8 @@
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
-type Props = {
-  categories?: Promise<string[]>;
-};
-
-async function SideNav(props: Props) {
-  const { categories } = props;
-
+function SkeletonSideNav() {
+  const skeletonCategories = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   return (
     <aside className="w-64 h-full shrink-0 overflow-hidden border-r border-slate-800 p-4 flex flex-col gap-4">
       <h4 className="text-2xl text-center font-bold">Filters</h4>
@@ -19,19 +15,15 @@ async function SideNav(props: Props) {
         <Button>Search</Button>
       </form>
       <h4 className="text-center text-2xl font-bold">Categories</h4>
-      <ul className="flex flex-col gap-1">
-        {categories ? (
-          (await categories).map((category) => (
-            <li className="text-center rounded-lg p-1" key={category}>
-              {category}
-            </li>
-          ))
-        ) : (
-          <li>Loading...</li>
-        )}
+      <ul className="flex flex-col gap-3">
+        {skeletonCategories.map((category) => (
+          <li className="text-center rounded-lg" key={category}>
+            <Skeleton className="h-8 w-full" />
+          </li>
+        ))}
       </ul>
     </aside>
   );
 }
 
-export default SideNav;
+export default SkeletonSideNav;

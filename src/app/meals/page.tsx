@@ -1,15 +1,29 @@
-import CardsGrid from "@/components/cards-grid";
-import SideNav from "@/components/side-nav";
-import { getCategories } from "@/lib/API/categories";
+import MealsResults from "@/components/meals-result";
+import SideNav from "@/components/sidenav";
+import SkeletonGrid from "@/components/skeleton-grid";
+import { getCategories } from "@/lib/API/get-categories";
+import { Suspense } from "react";
 
-const categories = getCategories();
+type Props = {
+  searchParams: Promise<{ category?: string; queryName?: string }>;
+};
 
-function MealsPage() {
+async function MealsPage(props: Props) {
+  // getting categories
+  const categories = await getCategories();
+
+  // fetching meals based on the selected category
+  const searchParams = await props.searchParams;
+  const category = searchParams.category || "beef";
+  const queryName = searchParams.queryName;
+
   return (
     <div className="mx-auto flex h-full w-full overflow-hidden">
-      <SideNav categories={categories} />
+      <SideNav categories={categories} selectedCategory={category} />
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <CardsGrid />
+        <Suspense key={category} fallback={<SkeletonGrid />}>
+          <MealsResults queryName={queryName} category={category} />
+        </Suspense>
       </div>
     </div>
   );

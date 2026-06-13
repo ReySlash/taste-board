@@ -17,7 +17,7 @@ export function CardImage(props: {
 }) {
   const { title, description, image } = props;
   return (
-    <Card className="relative mx-auto w-full pt-0">
+    <Card className="relative mx-auto w-full pt-0 h-full">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
       <Image
         src={image}
@@ -26,14 +26,14 @@ export function CardImage(props: {
         width={400}
         height={400}
       />
-      <CardHeader>
+      <CardHeader className="h-full">
         <CardAction>
           <Badge variant="secondary">Featured</Badge>
         </CardAction>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardFooter>
+      <CardFooter className="py-2">
         <Button className="w-full">View Recipe</Button>
       </CardFooter>
     </Card>
