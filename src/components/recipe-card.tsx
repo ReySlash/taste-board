@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -9,13 +8,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 
-export function CardImage(props: {
+export function RecipeCard(props: {
+  id: string;
   title: string;
   description: string;
   image: string;
 }) {
-  const { title, description, image } = props;
+  const { id, title, description, image } = props;
   return (
     <Card className="relative mx-auto w-full pt-0 h-full">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
@@ -34,7 +35,12 @@ export function CardImage(props: {
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter className="py-2">
-        <Button className="w-full">View Recipe</Button>
+        <Link
+          href={`/meals/${id}`}
+          className="w-full bg-[oklch(56.177%_0.18808_142.111)] text-white py-1 rounded-md text-center"
+        >
+          View Recipe
+        </Link>
       </CardFooter>
     </Card>
   );

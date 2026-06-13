@@ -30,7 +30,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="container mx-auto flex h-dvh w-full flex-col overflow-hidden border border-slate-800">
+      <body className="container mx-auto flex min-h-screen w-full flex-col border border-slate-800">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -38,9 +38,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TopNav />
-          <main className="mx-auto min-h-0 w-full flex-1 overflow-hidden">
-            {children}
-          </main>
+          {children}
         </ThemeProvider>
       </body>
     </html>

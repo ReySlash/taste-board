@@ -18,14 +18,14 @@ async function MealsPage(props: Props) {
   const queryName = searchParams.queryName;
 
   return (
-    <div className="mx-auto flex h-full w-full overflow-hidden">
+    <main className="mx-auto flex h-full w-full overflow-hidden">
       <SideNav categories={categories} selectedCategory={category} />
       <div className="min-h-0 flex-1 overflow-y-auto">
         <Suspense key={category} fallback={<SkeletonGrid />}>
           <MealsResults queryName={queryName} category={category} />
         </Suspense>
       </div>
-    </div>
+    </main>
   );
 }
 

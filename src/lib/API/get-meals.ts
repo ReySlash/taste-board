@@ -1,4 +1,4 @@
-import { MealSummary } from "@/types/meals";
+import { MealDetailsResponse, MealSummary } from "@/types/meals";
 
 function buildURL(filters: string[]): string {
   if (filters[0] === "filter") {
@@ -14,6 +14,15 @@ export async function getMeals(filters: string[]): Promise<MealSummary[]> {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
   const data = await response.json();
-  console.log(URL);
   return data.meals;
+}
+
+export async function getMealById(id: string): Promise<MealDetailsResponse> {
+  const URL = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
+  const response = await fetch(URL);
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
 }

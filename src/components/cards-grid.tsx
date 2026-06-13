@@ -1,5 +1,5 @@
 import { MealSummary } from "@/types/meals";
-import { CardImage } from "./recipe-card";
+import { RecipeCard } from "./recipe-card";
 
 type Props = {
   data: MealSummary[];
@@ -15,7 +15,8 @@ function CardsGrid(props: Props) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-2">
       {data.map((item) => (
         <div key={item.idMeal} className="col-span-1">
-          <CardImage
+          <RecipeCard
+            id={item.idMeal}
             title={item.strMeal}
             description={item.strArea}
             image={item.strMealThumb}
