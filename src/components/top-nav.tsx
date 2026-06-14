@@ -23,7 +23,7 @@ function TopNav() {
   ];
 
   return (
-    <header className="flex flex-row justify-between items-center h-10 py-4 px-4 sticky top-0 bg-white dark:bg-black border-b z-50">
+    <header className="sticky top-0 z-50 flex h-10 shrink-0 flex-row items-center justify-between border-b bg-white px-4 py-4 dark:bg-black">
       <h1 className="text-2xl font-bold">Taste Board</h1>
       <div>
         <nav>
