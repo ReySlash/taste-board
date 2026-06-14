@@ -14,7 +14,7 @@ export async function getMeals(filters: string[]): Promise<MealSummary[]> {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
   const data = await response.json();
-  return data.meals;
+  return Array.isArray(data.meals) ? data.meals : [];
 }
 
 export async function getMealById(id: string): Promise<MealDetailsResponse> {

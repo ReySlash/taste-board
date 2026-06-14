@@ -16,7 +16,7 @@ export async function getCocktails(
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
   const data = await response.json();
-  return data.drinks || [];
+  return Array.isArray(data.drinks) ? data.drinks : [];
 }
 
 export async function getCocktailById(

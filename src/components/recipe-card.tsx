@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -29,11 +28,12 @@ export function RecipeCard(props: {
         height={400}
       />
       <CardHeader className="h-full">
-        <CardAction>
-          <Badge variant="secondary">Featured</Badge>
-        </CardAction>
+        {description && (
+          <CardAction>
+            <Badge variant="secondary">{description}</Badge>
+          </CardAction>
+        )}
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter className="py-2">
         <Link

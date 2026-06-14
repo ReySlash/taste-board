@@ -19,7 +19,7 @@ function CardsGrid(props: Props) {
     </div>
   ) : (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-2">
-      {mealsData?.map((item) => (
+      {meals?.map((item) => (
         <div key={item.idMeal} className="col-span-1">
           <RecipeCard
             productType="meals"
@@ -30,7 +30,7 @@ function CardsGrid(props: Props) {
           />
         </div>
       ))}
-      {cocktailsData?.map((item) => (
+      {cocktails?.map((item) => (
         <div key={item.idDrink} className="col-span-1">
           <RecipeCard
             productType="cocktails"
