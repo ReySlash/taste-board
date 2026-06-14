@@ -75,6 +75,8 @@ function SideNav({ productType, categories, selectedCategory }: Props) {
           className="flex items-center gap-2 absolute z-50 backdrop-blur-xl"
           onClick={() => setMobileMenuOpen(true)}
           aria-label="Open filters menu"
+          aria-expanded={mobileMenuOpen}
+          aria-controls={`${productType}-mobile-filters`}
         >
           <HiOutlineAdjustments />
           Filters
@@ -84,6 +86,7 @@ function SideNav({ productType, categories, selectedCategory }: Props) {
         {content}
       </aside>
       <div
+        data-state={mobileMenuOpen ? "open" : "closed"}
         className={`fixed inset-0 z-40 bg-black/40 transition-opacity md:hidden ${
           mobileMenuOpen
             ? "pointer-events-auto opacity-100"
@@ -92,6 +95,8 @@ function SideNav({ productType, categories, selectedCategory }: Props) {
         onClick={() => setMobileMenuOpen(false)}
       />
       <aside
+        id={`${productType}-mobile-filters`}
+        data-state={mobileMenuOpen ? "open" : "closed"}
         className={`fixed top-0 left-0 z-50 h-screen w-72 border-r bg-background p-4 transition-transform duration-300 md:hidden ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}

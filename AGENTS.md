@@ -10,14 +10,15 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 
 ## Project Context
 - TasteBoard is a Next.js 16 App Router application.
-- The current stack includes React 19, Tailwind CSS 4, `shadcn/ui`, and `zod`.
+- The current stack includes React 19, Tailwind CSS 4, and `shadcn/ui`.
 - The active MVP product scope is documented in `docs/requirements.md`.
 
 ## Source Of Truth
 - Use `docs/requirements.md` for product behavior, page scope, data rules, and MVP expectations.
+- Use `docs/deployment.md` for release-readiness and deployment validation steps.
 - Use `node_modules/next/dist/docs/` for Next.js APIs, framework patterns, routing behavior, rendering behavior, and other framework decisions.
 - Use the current chat task as the highest-priority instruction for the active session when it intentionally overrides repo docs.
-- Treat `README.md` as secondary project/setup documentation unless it is explicitly updated to become a product or workflow authority.
+- Treat `README.md` as setup and deployment orientation documentation, not as the product source of truth.
 
 ## Working Agreement
 - Explore first before making assumptions.
@@ -35,8 +36,9 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 ## Validation
 - Run relevant checks before calling work complete.
 - Distinguish real code issues from sandbox, network, environment, or external-service artifacts.
-- Until a fuller automated test suite exists, use `pnpm lint` and `pnpm build` as the default baseline validation for app changes.
+- Use `pnpm lint`, `pnpm test`, and `pnpm build` as the default baseline validation for app changes when relevant.
 - If a check cannot be run, say so clearly and explain why.
+- When working on release or deployment readiness, verify docs stay aligned with the current implemented app rather than aspirational backlog items.
 
 ## Safety And Editing Constraints
 - Preserve existing user changes unless the user explicitly asks to replace or revert them.

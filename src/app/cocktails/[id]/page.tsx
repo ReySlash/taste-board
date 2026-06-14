@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import YoutubeCard from "@/components/youtube-card";
 import { getYouTubeVideoThumbnail } from "@/lib/API/get-thumbnail";
 import Image from "next/image";
 import Link from "next/link";
-import { IoIosHeart } from "react-icons/io";
 import { getCocktailById } from "@/lib/API/get-cocktails";
 import { buildMetadata, truncateDescription } from "@/lib/seo";
 import { CocktailDetails } from "@/types/cocktails";
+import { notFound } from "next/navigation";
+import FavoriteButton from "@/components/favorite-button";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -44,10 +44,24 @@ function buildCocktailDescription(cocktail: CocktailDetails) {
   return truncateDescription(parts.join(" "));
 }
 
+async function getCocktailOrNotFound(id: string) {
+  if (!/^\d+$/.test(id)) {
+    notFound();
+  }
+
+  const data = await getCocktailById(id);
+  const cocktail = data.drinks?.[0];
+
+  if (!cocktail) {
+    notFound();
+  }
+
+  return cocktail;
+}
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { id } = await props.params;
-  const data = await getCocktailById(id);
-  const cocktail = data.drinks[0];
+  const cocktail = await getCocktailOrNotFound(id);
 
   return buildMetadata({
     title: cocktail.strDrink,
@@ -59,12 +73,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 async function MealDetailsPage(props: Props) {
   const { id } = await props.params;
-
-  const data = await getCocktailById(id);
+  const cocktail = await getCocktailOrNotFound(id);
 
   let youtubeThumbnail: string | null = null;
-  if (data.drinks[0].strVideo) {
-    youtubeThumbnail = await getYouTubeVideoThumbnail(data.drinks[0].strVideo);
+  if (cocktail.strVideo) {
+    youtubeThumbnail = await getYouTubeVideoThumbnail(cocktail.strVideo);
   }
 
   return (
@@ -73,47 +86,53 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item relative col-span-1 flex h-[400px] items-center justify-center">
           <Image
             className="w-full rounded-2xl object-cover"
-            src={data.drinks[0].strDrinkThumb}
-            alt={data.drinks[0].strDrink}
+            src={cocktail.strDrinkThumb}
+            alt={cocktail.strDrink}
             fill
           />
         </article>
         <article className="grid-item col-span-1 flex flex-col justify-between">
           <div className="flex flex-col gap-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between relative">
               <h2 className="text-3xl font-bold lg:text-4xl">
-                {data.drinks[0].strDrink}
+                {cocktail.strDrink}
               </h2>
-              <Button variant={"outline"}>
-                <IoIosHeart className="text-red-500" />
-              </Button>
+              <FavoriteButton
+                item={{
+                  id,
+                  productType: "cocktails",
+                  title: cocktail.strDrink,
+                  description: buildCocktailDescription(cocktail),
+                  image: cocktail.strDrinkThumb,
+                }}
+              />
             </div>
             <div className="flex gap-4">
               <Badge variant="secondary">
-                <h3 className="text-xl">{data.drinks[0].strCategory}</h3>
+                <h3 className="text-xl">{cocktail.strCategory}</h3>
               </Badge>
-              {data.drinks[0].strAlcoholic && (
+              {cocktail.strAlcoholic && (
                 <Badge variant="secondary">
-                  <h3 className="text-xl">{data.drinks[0].strAlcoholic}</h3>
+                  <h3 className="text-xl">{cocktail.strAlcoholic}</h3>
                 </Badge>
               )}
-              {data.drinks[0].strIBA && (
+              {cocktail.strIBA && (
                 <Badge variant="secondary">
-                  <h3 className="text-xl">{data.drinks[0].strIBA}</h3>
+                  <h3 className="text-xl">{cocktail.strIBA}</h3>
                 </Badge>
               )}
             </div>
             <div className="flex gap-4">
-              {data.drinks[0].strGlass && (
+              {cocktail.strGlass && (
                 <Badge variant="secondary">
-                  <h3 className="text-xl">{data.drinks[0].strGlass}</h3>
+                  <h3 className="text-xl">{cocktail.strGlass}</h3>
                 </Badge>
               )}
             </div>
           </div>
-          {data.drinks[0].strVideo && (
+          {cocktail.strVideo && (
             <YoutubeCard
-              tutorialLink={data.drinks[0].strVideo}
+              tutorialLink={cocktail.strVideo}
               youtubeThumbnail={youtubeThumbnail || undefined}
             />
           )}
@@ -121,17 +140,17 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item col-span-1 flex flex-col gap-2 md:px-10">
           <h2 className="text-4xl">Ingredients</h2>
           <ul>
-            {Object.entries(data.drinks[0]).map(([key, value]) => {
+            {Object.entries(cocktail).map(([key, value]) => {
               if (key.startsWith("strIngredient") && value) {
                 return (
                   <li key={key}>
                     {"- "} {value} :{" "}
                     {
-                      data.drinks[0][
+                      cocktail[
                         key.replace(
                           "strIngredient",
                           "strMeasure",
-                        ) as keyof (typeof data.drinks)[0]
+                        ) as keyof CocktailDetails
                       ]
                     }
                   </li>
@@ -144,7 +163,7 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item col-span-1 flex flex-col gap-4">
           <h2 className="text-4xl">Instructions</h2>
           <div className="gap-2">
-            {parseInstructions(data.drinks[0].strInstructions).map(
+            {parseInstructions(cocktail.strInstructions).map(
               (instruction, index) => (
                 <p key={index}>
                   <Badge className="p-1">{index + 1}</Badge>

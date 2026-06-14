@@ -9,6 +9,7 @@ import Link from "next/link";
 import FavoriteButton from "@/components/favorite-button";
 import { FavoriteItem } from "@/lib/favorites";
 import { MealDetails } from "@/types/meals";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -49,10 +50,24 @@ function buildMealDescription(meal: MealDetails) {
   return truncateDescription(parts.join(" "));
 }
 
+async function getMealOrNotFound(id: string) {
+  if (!/^\d+$/.test(id)) {
+    notFound();
+  }
+
+  const data = await getMealById(id);
+  const meal = data.meals?.[0];
+
+  if (!meal) {
+    notFound();
+  }
+
+  return meal;
+}
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { id } = await props.params;
-  const data = await getMealById(id);
-  const meal = data.meals[0];
+  const meal = await getMealOrNotFound(id);
 
   return buildMetadata({
     title: meal.strMeal,
@@ -64,20 +79,19 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 async function MealDetailsPage(props: Props) {
   const { id } = await props.params;
-
-  const data = await getMealById(id);
+  const meal = await getMealOrNotFound(id);
 
   let youtubeThumbnail: string | null = null;
-  if (data.meals[0].strYoutube) {
-    youtubeThumbnail = await getYouTubeVideoThumbnail(data.meals[0].strYoutube);
+  if (meal.strYoutube) {
+    youtubeThumbnail = await getYouTubeVideoThumbnail(meal.strYoutube);
   }
 
   const favoriteItem: FavoriteItem = {
-    id: data.meals[0].idMeal,
+    id: meal.idMeal,
     productType: "meals",
-    title: data.meals[0].strMeal,
-    description: data.meals[0].strArea,
-    image: data.meals[0].strMealThumb,
+    title: meal.strMeal,
+    description: meal.strArea,
+    image: meal.strMealThumb,
   };
 
   return (
@@ -86,41 +100,39 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item relative col-span-1 flex h-[400px] items-center justify-center">
           <Image
             className="w-full rounded-2xl object-cover"
-            src={data.meals[0].strMealThumb}
-            alt={data.meals[0].strMeal}
+            src={meal.strMealThumb}
+            alt={meal.strMeal}
             fill
           />
         </article>
         <article className="grid-item col-span-1 flex flex-col justify-between">
           <div className="flex flex-col gap-4">
             <div className="flex justify-between relative">
-              <h2 className="text-3xl font-bold lg:text-4xl">
-                {data.meals[0].strMeal}
-              </h2>
+              <h2 className="text-3xl font-bold lg:text-4xl">{meal.strMeal}</h2>
               <FavoriteButton item={favoriteItem} />
             </div>
             <div className="flex gap-4">
               <Badge variant="secondary">
-                <h3 className="text-xl">{data.meals[0].strCategory}</h3>
+                <h3 className="text-xl">{meal.strCategory}</h3>
               </Badge>
-              {data.meals[0].strArea && (
+              {meal.strArea && (
                 <Badge variant="secondary">
-                  <h3 className="text-xl">{data.meals[0].strArea}</h3>
+                  <h3 className="text-xl">{meal.strArea}</h3>
                 </Badge>
               )}
             </div>
             <div className="flex gap-4">
-              {data.meals[0].strTags &&
-                data.meals[0].strTags.split(",").map((tag) => (
+              {meal.strTags &&
+                meal.strTags.split(",").map((tag) => (
                   <Badge key={tag} variant="secondary">
                     <h3 className="text-xl">{tag.trim()}</h3>
                   </Badge>
                 ))}
             </div>
           </div>
-          {data.meals[0].strYoutube && (
+          {meal.strYoutube && (
             <YoutubeCard
-              tutorialLink={data.meals[0].strYoutube}
+              tutorialLink={meal.strYoutube}
               youtubeThumbnail={youtubeThumbnail || undefined}
             />
           )}
@@ -128,17 +140,17 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item col-span-1 flex flex-col gap-2 md:px-10">
           <h2 className="text-4xl">Ingredients</h2>
           <ul>
-            {Object.entries(data.meals[0]).map(([key, value]) => {
+            {Object.entries(meal).map(([key, value]) => {
               if (key.startsWith("strIngredient") && value) {
                 return (
                   <li key={key}>
                     {"- "} {value} :{" "}
                     {
-                      data.meals[0][
+                      meal[
                         key.replace(
                           "strIngredient",
                           "strMeasure",
-                        ) as keyof (typeof data.meals)[0]
+                        ) as keyof MealDetails
                       ]
                     }
                   </li>
@@ -151,7 +163,7 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item col-span-1 flex flex-col gap-4">
           <h2 className="text-4xl">Instructions</h2>
           <div className="gap-2">
-            {parseInstructions(data.meals[0].strInstructions).map(
+            {parseInstructions(meal.strInstructions).map(
               (instruction, index) => (
                 <p key={index}>
                   <Badge className="p-1">{index + 1}</Badge>
