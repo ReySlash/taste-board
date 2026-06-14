@@ -2,11 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import YoutubeCard from "@/components/youtube-card";
 import { getYouTubeVideoThumbnail } from "@/lib/API/get-thumbnail";
-import { getMealById } from "@/lib/API/get-meals";
-import { MealDetailsResponse } from "@/types/meals";
 import Image from "next/image";
 import Link from "next/link";
 import { IoIosHeart } from "react-icons/io";
+import { getCocktailById } from "@/lib/API/get-cocktails";
+import { CocktailDetailsResponse } from "@/types/cocktails";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -23,11 +23,11 @@ function parseInstructions(instructions: string) {
 async function MealDetailsPage(props: Props) {
   const { id } = await props.params;
 
-  const data: MealDetailsResponse = await getMealById(id);
+  const data: CocktailDetailsResponse = await getCocktailById(id);
 
   let youtubeThumbnail: string | null = null;
-  if (data.meals[0].strYoutube) {
-    youtubeThumbnail = await getYouTubeVideoThumbnail(data.meals[0].strYoutube);
+  if (data.drinks[0].strVideo) {
+    youtubeThumbnail = await getYouTubeVideoThumbnail(data.drinks[0].strVideo);
   }
 
   return (
@@ -36,8 +36,8 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item relative col-span-1 flex h-[400px] items-center justify-center">
           <Image
             className="w-full rounded-2xl object-cover"
-            src={data.meals[0].strMealThumb}
-            alt={data.meals[0].strMeal}
+            src={data.drinks[0].strDrinkThumb}
+            alt={data.drinks[0].strDrink}
             fill
           />
         </article>
@@ -45,7 +45,7 @@ async function MealDetailsPage(props: Props) {
           <div className="flex flex-col gap-4">
             <div className="flex justify-between">
               <h2 className="text-3xl font-bold lg:text-4xl">
-                {data.meals[0].strMeal}
+                {data.drinks[0].strDrink}
               </h2>
               <Button variant={"outline"}>
                 <IoIosHeart className="text-red-500" />
@@ -53,26 +53,30 @@ async function MealDetailsPage(props: Props) {
             </div>
             <div className="flex gap-4">
               <Badge variant="secondary">
-                <h3 className="text-xl">{data.meals[0].strCategory}</h3>
+                <h3 className="text-xl">{data.drinks[0].strCategory}</h3>
               </Badge>
-              {data.meals[0].strArea && (
+              {data.drinks[0].strAlcoholic && (
                 <Badge variant="secondary">
-                  <h3 className="text-xl">{data.meals[0].strArea}</h3>
+                  <h3 className="text-xl">{data.drinks[0].strAlcoholic}</h3>
+                </Badge>
+              )}
+              {data.drinks[0].strIBA && (
+                <Badge variant="secondary">
+                  <h3 className="text-xl">{data.drinks[0].strIBA}</h3>
                 </Badge>
               )}
             </div>
             <div className="flex gap-4">
-              {data.meals[0].strTags &&
-                data.meals[0].strTags.split(",").map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    <h3 className="text-xl">{tag.trim()}</h3>
-                  </Badge>
-                ))}
+              {data.drinks[0].strGlass && (
+                <Badge variant="secondary">
+                  <h3 className="text-xl">{data.drinks[0].strGlass}</h3>
+                </Badge>
+              )}
             </div>
           </div>
-          {data.meals[0].strYoutube && (
+          {data.drinks[0].strVideo && (
             <YoutubeCard
-              tutorialLink={data.meals[0].strYoutube}
+              tutorialLink={data.drinks[0].strVideo}
               youtubeThumbnail={youtubeThumbnail || undefined}
             />
           )}
@@ -80,17 +84,17 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item col-span-1 flex flex-col gap-2 md:px-10">
           <h2 className="text-4xl">Ingredients</h2>
           <ul>
-            {Object.entries(data.meals[0]).map(([key, value]) => {
+            {Object.entries(data.drinks[0]).map(([key, value]) => {
               if (key.startsWith("strIngredient") && value) {
                 return (
                   <li key={key}>
                     {"- "} {value} :{" "}
                     {
-                      data.meals[0][
+                      data.drinks[0][
                         key.replace(
                           "strIngredient",
                           "strMeasure",
-                        ) as keyof (typeof data.meals)[0]
+                        ) as keyof (typeof data.drinks)[0]
                       ]
                     }
                   </li>
@@ -103,7 +107,7 @@ async function MealDetailsPage(props: Props) {
         <article className="grid-item col-span-1 flex flex-col gap-4">
           <h2 className="text-4xl">Instructions</h2>
           <div className="gap-2">
-            {parseInstructions(data.meals[0].strInstructions).map(
+            {parseInstructions(data.drinks[0].strInstructions).map(
               (instruction, index) => (
                 <p key={index}>
                   <Badge className="p-1">{index + 1}</Badge>
@@ -117,9 +121,9 @@ async function MealDetailsPage(props: Props) {
           <div className="flex w-full justify-center">
             <Link
               className="w-35 py-2 bg-[oklch(56.177%_0.18808_142.111)] rounded-xl text-center"
-              href="/meals"
+              href="/cocktails"
             >
-              Back to meals
+              Back to cocktails
             </Link>
           </div>
         </article>

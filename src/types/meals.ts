@@ -17,10 +17,6 @@ export type MealSummary = {
   strCountry: string;
 };
 
-export type MealsFilterResponse = {
-  meals: MealSummary[];
-};
-
 export type MealDetails = {
   idMeal: string;
   strMeal: string;

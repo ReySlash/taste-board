@@ -10,16 +10,20 @@ type Props = {
 
 async function MealsPage(props: Props) {
   // getting categories
-  const categories = await getCategories();
+  const categories = await getCategories("meals");
 
   // fetching meals based on the selected category
   const searchParams = await props.searchParams;
-  const category = searchParams.category || "beef";
+  const category = searchParams.category || "Beef";
   const queryName = searchParams.queryName;
 
   return (
     <main className="mx-auto flex min-h-0 flex-1 w-full overflow-hidden">
-      <SideNav categories={categories} selectedCategory={category} />
+      <SideNav
+        productType="meals"
+        categories={categories}
+        selectedCategory={category}
+      />
       <div className="min-h-0 flex-1 overflow-y-auto">
         <Suspense key={category} fallback={<SkeletonGrid />}>
           <MealsResults queryName={queryName} category={category} />

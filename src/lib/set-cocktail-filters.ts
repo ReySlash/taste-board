@@ -1,6 +1,6 @@
-export function setFilters(category?: string, queryName?: string) {
+export function setCocktailsFilters(category?: string, queryName?: string) {
   if (!category && !queryName) {
-    return ["filter", "c=beef"];
+    return ["filter", "c=Beer"];
   }
   if (queryName) {
     return ["search", `s=${queryName}`];

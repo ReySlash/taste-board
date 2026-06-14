@@ -11,12 +11,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function RecipeCard(props: {
+  productType: "meals" | "cocktails";
   id: string;
   title: string;
   description: string;
   image: string;
 }) {
-  const { id, title, description, image } = props;
+  const { productType, id, title, description, image } = props;
   return (
     <Card className="relative mx-auto w-full pt-0 h-full">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
@@ -36,7 +37,7 @@ export function RecipeCard(props: {
       </CardHeader>
       <CardFooter className="py-2">
         <Link
-          href={`/meals/${id}`}
+          href={`/${productType}/${id}`}
           className="w-full bg-[oklch(56.177%_0.18808_142.111)] text-white py-1 rounded-md text-center"
         >
           View Recipe

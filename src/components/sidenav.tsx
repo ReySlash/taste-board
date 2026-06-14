@@ -3,17 +3,18 @@ import { Button } from "./ui/button";
 import Form from "next/form";
 
 type Props = {
+  productType: "meals" | "cocktails";
   categories: string[] | undefined;
   selectedCategory: string;
 };
 
-function SideNav({ categories, selectedCategory }: Props) {
+function SideNav({ productType, categories, selectedCategory }: Props) {
   return (
     <aside className="h-full w-64 shrink-0 border-r p-4">
       <div className="flex h-full flex-col gap-4">
         <h4 className="text-2xl text-center font-bold">Filters</h4>
         <Form
-          action="/meals"
+          action={`/${productType}`}
           className="grid grid-cols-3 items-center justify-center gap-1 rounded"
         >
           <input
@@ -35,7 +36,7 @@ function SideNav({ categories, selectedCategory }: Props) {
               ) : (
                 <Button variant="outline" className="w-full">
                   <Link
-                    href={`/meals?category=${category}`}
+                    href={`/${productType}?category=${category}`}
                     className="flex h-full w-full items-center justify-center"
                   >
                     {category}
