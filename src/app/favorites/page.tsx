@@ -1,41 +1,18 @@
-"use client";
+import type { Metadata } from "next";
+import FavoritesPage from "@/components/favorites-page";
+import { buildMetadata } from "@/lib/seo";
 
-import { useEffect, useState } from "react";
-import CardsGrid from "@/components/cards-grid";
-import {
-  FavoriteItem,
-  FAVORITES_UPDATED_EVENT,
-  readFavorites,
-  toCocktailSummaries,
-  toMealSummaries,
-} from "@/lib/favorites";
+export const metadata: Metadata = buildMetadata({
+  title: "Your Favorite Recipes",
+  description:
+    "Browse the meals and cocktails you saved on this device in your personal Taste Board favorites list.",
+  pathname: "/favorites",
+  robots: {
+    index: false,
+    follow: false,
+  },
+});
 
-function FavoritesPage() {
-  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
-
-  useEffect(() => {
-    function syncFavorites() {
-      setFavorites(readFavorites());
-    }
-
-    syncFavorites();
-    window.addEventListener("storage", syncFavorites);
-    window.addEventListener(FAVORITES_UPDATED_EVENT, syncFavorites);
-
-    return () => {
-      window.removeEventListener("storage", syncFavorites);
-      window.removeEventListener(FAVORITES_UPDATED_EVENT, syncFavorites);
-    };
-  }, []);
-
-  return (
-    <main className="mx-auto min-h-0 flex-1 w-full overflow-y-auto">
-      <CardsGrid
-        mealsData={toMealSummaries(favorites)}
-        cocktailsData={toCocktailSummaries(favorites)}
-      />
-    </main>
-  );
+export default function FavoritesRoute() {
+  return <FavoritesPage />;
 }
-
-export default FavoritesPage;

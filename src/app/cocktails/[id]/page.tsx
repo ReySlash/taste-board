@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import YoutubeCard from "@/components/youtube-card";
@@ -6,7 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoIosHeart } from "react-icons/io";
 import { getCocktailById } from "@/lib/API/get-cocktails";
-import { CocktailDetailsResponse } from "@/types/cocktails";
+import { buildMetadata, truncateDescription } from "@/lib/seo";
+import { CocktailDetails } from "@/types/cocktails";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -20,10 +22,45 @@ function parseInstructions(instructions: string) {
     .filter(Boolean);
 }
 
+function buildCocktailDescription(cocktail: CocktailDetails) {
+  const category = cocktail.strCategory?.trim();
+  const alcoholic = cocktail.strAlcoholic?.trim();
+  const glass = cocktail.strGlass?.trim();
+  const iba = cocktail.strIBA?.trim();
+  const segments = [category, alcoholic, glass ? `served in a ${glass}` : null]
+    .filter(Boolean)
+    .join(", ");
+
+  const parts = [
+    segments
+      ? `Explore ${cocktail.strDrink}, a cocktail featuring ${segments} on Taste Board.`
+      : `Explore ${cocktail.strDrink} on Taste Board.`,
+    iba ? `IBA classification: ${iba}.` : null,
+    !iba && cocktail.strInstructions
+      ? truncateDescription(cocktail.strInstructions, 90)
+      : null,
+  ].filter(Boolean);
+
+  return truncateDescription(parts.join(" "));
+}
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { id } = await props.params;
+  const data = await getCocktailById(id);
+  const cocktail = data.drinks[0];
+
+  return buildMetadata({
+    title: cocktail.strDrink,
+    description: buildCocktailDescription(cocktail),
+    pathname: `/cocktails/${id}`,
+    ogImage: cocktail.strDrinkThumb,
+  });
+}
+
 async function MealDetailsPage(props: Props) {
   const { id } = await props.params;
 
-  const data: CocktailDetailsResponse = await getCocktailById(id);
+  const data = await getCocktailById(id);
 
   let youtubeThumbnail: string | null = null;
   if (data.drinks[0].strVideo) {

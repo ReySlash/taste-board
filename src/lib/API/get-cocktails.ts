@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { CocktailDetailsResponse, CocktailSummary } from "@/types/cocktails";
 
 function buildURL(filters: string[]): string {
@@ -19,9 +20,8 @@ export async function getCocktails(
   return Array.isArray(data.drinks) ? data.drinks : [];
 }
 
-export async function getCocktailById(
-  id: string,
-): Promise<CocktailDetailsResponse> {
+export const getCocktailById = cache(
+  async (id: string): Promise<CocktailDetailsResponse> => {
   const URL = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`;
   const response = await fetch(URL);
   if (!response.ok) {
@@ -29,4 +29,5 @@ export async function getCocktailById(
   }
   const data = await response.json();
   return data;
-}
+  },
+);

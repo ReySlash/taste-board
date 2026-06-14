@@ -1,12 +1,14 @@
+import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
 import YoutubeCard from "@/components/youtube-card";
 import { getYouTubeVideoThumbnail } from "@/lib/API/get-thumbnail";
 import { getMealById } from "@/lib/API/get-meals";
-import { MealDetailsResponse } from "@/types/meals";
+import { buildMetadata, truncateDescription } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import FavoriteButton from "@/components/favorite-button";
 import { FavoriteItem } from "@/lib/favorites";
+import { MealDetails } from "@/types/meals";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -20,10 +22,50 @@ function parseInstructions(instructions: string) {
     .filter(Boolean);
 }
 
+function buildMealDescription(meal: MealDetails) {
+  const tags = meal.strTags
+    ?.split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+  const category = meal.strCategory?.trim();
+  const area = meal.strArea?.trim();
+  const summary = [
+    category ? `${category} recipe` : null,
+    area ? `from ${area}` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const parts = [
+    summary
+      ? `Explore ${meal.strMeal}, a ${summary} on Taste Board.`
+      : `Explore ${meal.strMeal} on Taste Board.`,
+    tags?.length ? `Tags: ${tags.join(", ")}.` : null,
+    !tags?.length && meal.strInstructions
+      ? truncateDescription(meal.strInstructions, 90)
+      : null,
+  ].filter(Boolean);
+
+  return truncateDescription(parts.join(" "));
+}
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { id } = await props.params;
+  const data = await getMealById(id);
+  const meal = data.meals[0];
+
+  return buildMetadata({
+    title: meal.strMeal,
+    description: buildMealDescription(meal),
+    pathname: `/meals/${id}`,
+    ogImage: meal.strMealThumb,
+  });
+}
+
 async function MealDetailsPage(props: Props) {
   const { id } = await props.params;
 
-  const data: MealDetailsResponse = await getMealById(id);
+  const data = await getMealById(id);
 
   let youtubeThumbnail: string | null = null;
   if (data.meals[0].strYoutube) {

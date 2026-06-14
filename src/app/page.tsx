@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
+import { buildMetadata } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Discover Meal And Cocktail Recipes",
+  description:
+    "Explore Taste Board for handpicked meals and cocktails with ingredients, instructions, and ideas for every taste.",
+  pathname: "/",
+});
 
 export default function Home() {
   return (

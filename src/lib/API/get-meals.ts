@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { MealDetailsResponse, MealSummary } from "@/types/meals";
 
 function buildURL(filters: string[]): string {
@@ -17,7 +18,8 @@ export async function getMeals(filters: string[]): Promise<MealSummary[]> {
   return Array.isArray(data.meals) ? data.meals : [];
 }
 
-export async function getMealById(id: string): Promise<MealDetailsResponse> {
+export const getMealById = cache(
+  async (id: string): Promise<MealDetailsResponse> => {
   const URL = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
   const response = await fetch(URL);
   if (!response.ok) {
@@ -25,4 +27,5 @@ export async function getMealById(id: string): Promise<MealDetailsResponse> {
   }
   const data = await response.json();
   return data;
-}
+  },
+);
