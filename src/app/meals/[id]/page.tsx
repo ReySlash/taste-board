@@ -1,12 +1,10 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import YoutubeCard from "@/components/youtube-card";
 import { getYouTubeVideoThumbnail } from "@/lib/API/get-thumbnail";
 import { getMealById } from "@/lib/API/get-meals";
 import { MealDetailsResponse } from "@/types/meals";
 import Image from "next/image";
 import Link from "next/link";
-import { IoIosHeart } from "react-icons/io";
 import FavoriteButton from "@/components/favorite-button";
 import { FavoriteItem } from "@/lib/favorites";
 
