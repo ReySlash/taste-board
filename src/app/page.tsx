@@ -14,7 +14,7 @@ export const metadata: Metadata = buildMetadata({
 export default function Home() {
   return (
     <section className="bg-white dark:bg-black">
-      <main className="relative min-h-screen overflow-hidden bg-white dark:bg-black">
+      <main className="relative min-h-[87vh] overflow-hidden bg-white dark:bg-black">
         <div className="relative h-[50vh] w-full lg:hidden">
           <Image
             src="/hero-light.png"
@@ -99,6 +99,21 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <footer>
+        <div className="container mx-auto px-6 py-8">
+          <p className="text-center text-sm text-muted-foreground">
+            Website by{" "}
+            <a
+              className="text-blue-500"
+              href="https://www.linkedin.com/in/reynaldo-carmenate-arias-03b5102b5/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B2w8T6uwDShyTuGfJFsV9kQ%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Reynaldo Carmenate Arias
+            </a>
+          </p>
+        </div>
+      </footer>
     </section>
   );
 }

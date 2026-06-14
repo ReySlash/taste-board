@@ -57,7 +57,7 @@ async function CocktailsPage(props: Props) {
   const queryName = searchParams.queryName;
 
   return (
-    <main className="mx-auto flex min-h-0 flex-1 w-full overflow-hidden">
+    <main className="mx-auto flex h-[calc(100dvh-2.5rem)] w-full overflow-hidden">
       <SideNav
         productType="cocktails"
         categories={categories}
