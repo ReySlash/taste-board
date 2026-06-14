@@ -7,6 +7,8 @@ import { MealDetailsResponse } from "@/types/meals";
 import Image from "next/image";
 import Link from "next/link";
 import { IoIosHeart } from "react-icons/io";
+import FavoriteButton from "@/components/favorite-button";
+import { FavoriteItem } from "@/lib/favorites";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -30,6 +32,14 @@ async function MealDetailsPage(props: Props) {
     youtubeThumbnail = await getYouTubeVideoThumbnail(data.meals[0].strYoutube);
   }
 
+  const favoriteItem: FavoriteItem = {
+    id: data.meals[0].idMeal,
+    productType: "meals",
+    title: data.meals[0].strMeal,
+    description: data.meals[0].strArea,
+    image: data.meals[0].strMealThumb,
+  };
+
   return (
     <main className="mx-auto min-h-0 flex-1 w-full overflow-y-auto">
       <div className="container mx-auto grid grid-cols-1 gap-2 px-2 py-4 md:grid-cols-2">
@@ -43,13 +53,11 @@ async function MealDetailsPage(props: Props) {
         </article>
         <article className="grid-item col-span-1 flex flex-col justify-between">
           <div className="flex flex-col gap-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between relative">
               <h2 className="text-3xl font-bold lg:text-4xl">
                 {data.meals[0].strMeal}
               </h2>
-              <Button variant={"outline"}>
-                <IoIosHeart className="text-red-500" />
-              </Button>
+              <FavoriteButton item={favoriteItem} />
             </div>
             <div className="flex gap-4">
               <Badge variant="secondary">
