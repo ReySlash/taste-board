@@ -1,10 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import YoutubeCard from "@/components/youtube-card";
+import { getYouTubeVideoThumbnail } from "@/lib/actions/get-thumbnail-action";
 import { getMealById } from "@/lib/API/get-meals";
 import { MealDetailsResponse } from "@/types/meals";
 import Image from "next/image";
-
+import Link from "next/link";
 import { IoIosHeart } from "react-icons/io";
 
 type Props = {
@@ -15,6 +16,11 @@ async function MealDetailsPage(props: Props) {
   const { id } = await props.params;
 
   const data: MealDetailsResponse = await getMealById(id);
+
+  let youtubeThumbnail: string | null = null;
+  if (data.meals[0].strYoutube) {
+    youtubeThumbnail = await getYouTubeVideoThumbnail(data.meals[0].strYoutube);
+  }
 
   return (
     <main className="mx-auto min-h-0 flex-1 w-full overflow-y-auto">
@@ -57,32 +63,36 @@ async function MealDetailsPage(props: Props) {
             </div>
           </div>
           {data.meals[0].strYoutube && (
-            <YoutubeCard tutorialLink={data.meals[0].strYoutube} />
+            <YoutubeCard
+              tutorialLink={data.meals[0].strYoutube}
+              youtubeThumbnail={youtubeThumbnail || undefined}
+            />
           )}
         </article>
         <article className="grid-item col-span-1 flex flex-col gap-2 md:px-10">
           <h2 className="text-4xl">Ingredients</h2>
-
-          {Object.entries(data.meals[0]).map(([key, value]) => {
-            if (key.startsWith("strIngredient") && value) {
-              return (
-                <p key={key}>
-                  {"- "} {value} :{" "}
-                  {
-                    data.meals[0][
-                      key.replace(
-                        "strIngredient",
-                        "strMeasure",
-                      ) as keyof (typeof data.meals)[0]
-                    ]
-                  }
-                </p>
-              );
-            }
-            return null;
-          })}
+          <ul>
+            {Object.entries(data.meals[0]).map(([key, value]) => {
+              if (key.startsWith("strIngredient") && value) {
+                return (
+                  <li key={key}>
+                    {"- "} {value} :{" "}
+                    {
+                      data.meals[0][
+                        key.replace(
+                          "strIngredient",
+                          "strMeasure",
+                        ) as keyof (typeof data.meals)[0]
+                      ]
+                    }
+                  </li>
+                );
+              }
+              return null;
+            })}
+          </ul>
         </article>
-        <article className="grid-item col-span-1 flex flex-col">
+        <article className="grid-item col-span-1 flex flex-col gap-4">
           <h2 className="text-4xl">Instructions</h2>
           <div className="gap-2">
             {data.meals[0].strInstructions
@@ -97,6 +107,14 @@ async function MealDetailsPage(props: Props) {
                   {"."}
                 </p>
               ))}
+          </div>
+          <div className="flex w-full justify-center">
+            <Link
+              className="w-35 py-2 bg-[oklch(56.177%_0.18808_142.111)] rounded-xl text-center"
+              href="/meals"
+            >
+              Back to meals
+            </Link>
           </div>
         </article>
       </div>

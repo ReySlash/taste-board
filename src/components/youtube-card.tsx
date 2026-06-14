@@ -1,32 +1,45 @@
+import Image from "next/image";
+
 import { IoLogoYoutube } from "react-icons/io";
 
 type Props = {
   tutorialLink: string;
+  youtubeThumbnail?: string | null;
 };
 
 function YoutubeCard(props: Props) {
-  const { tutorialLink } = props;
+  const { tutorialLink, youtubeThumbnail } = props;
+  console.log(youtubeThumbnail);
   return (
     <>
-      <article className="rounded-xl">
-        <div className="flex items-center gap-4 p-2">
-          <div>
-            <IoLogoYoutube className="w-40 h-auto" />
-          </div>
+      <a href={tutorialLink} target="_blank" className="border rounded-xl">
+        <article className="rounded-xl">
+          <div className="flex items-center gap-4">
+            <div className="relative w-30 h-30">
+              {youtubeThumbnail && (
+                <Image
+                  className="rounded-xl"
+                  src={youtubeThumbnail}
+                  alt="YouTube Thumbnail"
+                  fill={true}
+                />
+              )}
+            </div>
 
-          <div>
-            <h3 className="text-xl font-bold"> Youtube Tutorial </h3>
+            <div>
+              <div className="flex items-center gap-2">
+                <IoLogoYoutube className="text-2xl" />
+                <h3 className="text-xl font-bold"> Youtube Tutorial </h3>
+              </div>
 
-            <p>
-              Learn how to prepare this delicious recipe with a step-by-step
-              video tutorial.
-            </p>
-            <a href={tutorialLink} target="_blank" className="text-blue-500">
-              Watch Tutorial
-            </a>
+              <p>
+                Learn how to prepare this delicious recipe with a step-by-step
+                video tutorial.
+              </p>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      </a>
     </>
   );
 }

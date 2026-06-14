@@ -3,6 +3,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "./mode-toggle";
 import { usePathname } from "next/navigation";
+import { PiChefHatDuotone } from "react-icons/pi";
+import { LiaCocktailSolid } from "react-icons/lia";
 
 function TopNav() {
   const pathname = usePathname();
@@ -24,7 +26,10 @@ function TopNav() {
 
   return (
     <header className="sticky top-0 z-50 flex h-10 shrink-0 flex-row items-center justify-between border-b bg-white px-4 py-4 dark:bg-black">
-      <h1 className="text-2xl font-bold">Taste Board</h1>
+      <div className="flex items-center gap-1">
+        <PiChefHatDuotone className="text-4xl" />
+        <LiaCocktailSolid className="text-4xl" />
+      </div>
       <div>
         <nav>
           <ul className="flex gap-15">
