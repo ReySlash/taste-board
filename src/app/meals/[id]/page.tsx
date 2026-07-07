@@ -103,6 +103,8 @@ async function MealDetailsPage(props: Props) {
             src={meal.strMealThumb}
             alt={meal.strMeal}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            unoptimized
           />
         </article>
         <article className="grid-item col-span-1 flex flex-col justify-between">

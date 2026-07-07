@@ -22,6 +22,8 @@ function YoutubeCard(props: Props) {
                   src={youtubeThumbnail}
                   alt="YouTube Thumbnail"
                   fill={true}
+                  sizes="120px"
+                  unoptimized
                 />
               )}
             </div>

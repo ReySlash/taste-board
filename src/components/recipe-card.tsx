@@ -26,6 +26,7 @@ export function RecipeCard(props: {
           alt="Recipe cover"
           fill
           className="rounded-t-xl object-cover"
+          unoptimized
         />
         <div className="absolute inset-0 z-10 bg-black/35" />
         <FavoriteButton
